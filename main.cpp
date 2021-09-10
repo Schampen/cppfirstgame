@@ -2,21 +2,6 @@
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 
-// Source code for a vertex shader
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-// Source code for a fragment shader
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"	FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);\n"
-"}\n\0";
-
 int main()
 {
 	// Initialize GLFW
@@ -31,13 +16,6 @@ int main()
 	// So that means we only have the modern functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// An array of vertices, a vertex is a point where two or more lines meet
-	GLfloat vertices[] =
-	{
-		-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-		0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-		0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f,
-	};
 
 	// Create a GLFWwindow object
 	GLFWwindow* window = glfwCreateWindow(800,800, "C++ First Game", NULL, NULL);
@@ -58,41 +36,6 @@ int main()
 	// Specify the viewport of OpenGL in the window
 	glViewport(0, 0, 800, 800);
 
-	// Creates a shader of a defined type with the source code defined at the start of the file and compiles it into machine code to be used
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-
-	// Creates a shader program
-	GLuint shaderProgram = glCreateProgram();
-	// Attaches the previously created shaders to the shader program
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	// Links the shader program to GLFW so that we can use it
-	glLinkProgram(shaderProgram);
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	GLuint VAO, VBO;
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glDisableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
 
 	// Specify the background color
 	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -104,21 +47,10 @@ int main()
 
 	while (!glfwWindowShouldClose(window))
 	{
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glfwSwapBuffers(window);
 
 		// Takes care of all GLFW events
 		glfwPollEvents();
 	}
-
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteProgram(shaderProgram);
 
 	// Destroys the GLFW window
 	glfwDestroyWindow(window);
